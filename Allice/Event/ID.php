@@ -16,6 +16,7 @@ class ID {
     const MODEL_FOUND = 300;
     const MODEL_RUN = 350;
     const RENDER_VIEW  = 3;
+    const VIEW_SEND = 4;
 };
 
 ?>

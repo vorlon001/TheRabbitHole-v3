@@ -14,13 +14,13 @@ class Pudding{
     public function __unset($name) {}
     public function __set($name, $value) {}
     public function __get($name) {}
-    
+
 
     private $_domain_request = NULL;
-    
+
     private $EventDispatcher 	= NULL;
     private $Event		= NULL;
-    
+
     public static function getInstance(String $_CONFIG) {
 	if (self::$instance == NULL)
 	{
@@ -238,7 +238,7 @@ class Pudding{
     public function _ua_browser() {
 	$UA = $this->parse_user_agent(substr($this->_SERVER['HTTP_USER_AGENT'],0,255));
 	return $UA['browser'];
-    }	
+    }
 }
 
 ?>

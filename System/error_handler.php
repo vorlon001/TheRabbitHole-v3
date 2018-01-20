@@ -1,12 +1,12 @@
 <?php
 define('SITE_ROOT_PATH','');
 error_reporting(E_ALL);
-ini_set('display_errors','On');
+ini_set('display_errors','Off');
 
 ini_set('error_log',SITE_ROOT_PATH.FILE_ERROR_LOG);
 $STDERR = fopen(SITE_ROOT_PATH.FILE_ERROR_LOG, 'ab');
 if( !is_resource($STDERR) ) {
-//    header('Location: /500.html');
+    header('Location: /Public/500.html');
     die();
 }
 // функция обработки ошибок
@@ -86,8 +86,9 @@ function error_exit ($e,$dmp) {
     error_log("File : " . $e->getFile());
     error_log("Line : " . $e->getLine());
     error_log("Dump : " . $e->getTraceAsString());
-    header('Location: /500.html');
+    header('Location: /Public/500.html');
     exit;
 }
+
 
 ?>

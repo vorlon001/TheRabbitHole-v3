@@ -16,9 +16,7 @@ class PROFILE extends \Allice\Route\BASE {
 				],
 				'view' 		=> [
 				    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-				    'method'	=> 'run',
-				    'JSON'	=> FALSE,
-				    'TPL'	=> '{{ include("../tpl/admin/class.post.1.tpl") }}'
+				    'method'	=> 'run'
 				]
     			    ],
 	],
@@ -26,14 +24,12 @@ class PROFILE extends \Allice\Route\BASE {
 	    'path'	=> '/file/{command}/{request}',
 	    'route'	=> [
     	    		    'method'	=> [
-					    'class'	=> \Customer\Model\DNS_HOST_1\Rabbit::class, 
+					    'class'	=> \Customer\Model\DNS_HOST_1\Rabbit_JSON::class, 
 					    'method'	=> 'run'
 					    ],
 			    'view' 	=> [
-					    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-					    'method'	=> 'run',
-					    'JSON'	=> FALSE,
-					    'TPL'	=> '{{ include("../tpl/admin/class.post.5.tpl") }}'
+					    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit_JSON::class,
+					    'method'	=> 'run'
 					    ]
 	    		    ],
 	],
@@ -47,10 +43,8 @@ class PROFILE extends \Allice\Route\BASE {
 				],
 
 				'view' 		=> [
-				    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-				    'method'	=> 'run',
-				    'JSON'	=> FALSE,
-				    'TPL'	=> '{{ include("../tpl/admin/class.post.2.tpl") }}'
+				    'class'	=> \Customer\View\DNS_HOST_1\V404::class,
+				    'method'	=> 'run'
 				]
 
 	    		    ],

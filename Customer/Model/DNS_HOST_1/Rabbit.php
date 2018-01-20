@@ -10,9 +10,8 @@ class Rabbit extends \Allice\Model\BASE {
     }
 
     function run ($req) { 
-	try {
-	    var_dump("START RUN MODEL ########################################",json_encode($req)); 
-	    echo 'pages 2 '.PHP_EOL; 
+	try { 
+	    $s = var_export("<br>START RUN MODEL...<br> args: url:".json_encode($req->VALUE)." dns_arg:".json_encode($req->VALUE_DNS),true); 
 	    if(debug_mode==TRUE) $this->EventDispatcher::getInstance()->dispatch(
 									$this->Event::LOG,
 									'CUSTOM_LOG exec MODEL...',
@@ -24,9 +23,12 @@ class Rabbit extends \Allice\Model\BASE {
 													])
 									);
 							
-	    var_dump("END RUN MODEL ########################################");
+	    $s .= "<br>END RUN MODEL...<br>";
 	    return [
+		    'dns'	=> $req->DNS,
+		    'url'	=> $req->req,
 	    	    'id'	=> 2345234,
+		    'html'	=> $s,
 		    'txt'	=> [
 				    'a1'	=> 1234123,
 				    'a2'	=> 'dsgfsdfg'

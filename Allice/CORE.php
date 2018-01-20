@@ -2,8 +2,6 @@
 
 namespace Allice;
 
-
-
 class CORE {
     static function ERROR_LOG(String $sms) {
 	error_log($sms);
@@ -167,9 +165,14 @@ class CORE {
 
 	    $view = $event->value{0}->path->view;
 
+    	    $event->value{0}->request->CLASS = $c;
+    	    $event->value{0}->request->CLASS_ID_METHOD = $m;
+	    array_push( $event->value{0}->request->CLASS_LOG, [ $event->value{0}->request->CLASS, $event->value{0}->request->CLASS_ID_METHOD ]);
+
 	    $o = new $c($_CONFIG);
 	    $render = $o->$m($event->value{0}->request);
 	    $o = NULL;
+
 
 	    if(debug_trace==TRUE) $EventDispatcher::getInstance()->dispatch(
 									    $Event::SYSTEM_LOG,
@@ -178,7 +181,8 @@ class CORE {
 														'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
 														'value' => [
 				    		    									    $render,
-															    $view
+															    $view,
+															    \Allice\Module\Cloud::newObject(TRUE)->addArray([ 'request' => $event->value{0}->request ])
 															    ]
 														])
 									    );
@@ -189,7 +193,8 @@ class CORE {
 											    'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
 											    'value' => [
 		    						    				        $render,
-													$view
+													$view,
+													\Allice\Module\Cloud::newObject(TRUE)->addArray([ 'request' => $event->value{0}->request ])
 													]
 											    ])
 						    );
@@ -223,9 +228,35 @@ class CORE {
 
 	    $c = $event->value{1}{'class'};
 	    $m = $event->value{1}{'method'};
+    	    $event->value{2}->request->CLASS = $c;
+	    $event->value{2}->request->CLASS_ID_METHOD = $m;
+    	    array_push( $event->value{2}->request->CLASS_LOG, [ $c, $m ]);
 	    $o = new $c($_CONFIG);
-	    $o->$m($event->value);
+	    $s = $o->$m($event->value{0});
 	    $o = NULL;
+
+	    if(debug_trace==TRUE) $EventDispatcher::getInstance()->dispatch(
+					$Event::SYSTEM_LOG,
+					'run send view...',
+				            \Allice\Module\Cloud::newObject(TRUE)->addArray([
+					    		    'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
+							    'value' => [
+							        	    var_export($s,true),
+									]
+							    ])
+					);
+
+	    $EventDispatcher::getInstance()->dispatch(
+			        $Event::VIEW_SEND,
+			        'run send view...',
+			        \Allice\Module\Cloud::newObject(TRUE)->addArray([
+								'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
+								'value' => [
+						    				$s,
+						    			    ]
+					    			])
+				);
+
         } catch(Throwable $e) {
 	    $EventDispatcher::getInstance()->dispatch(
     		$Event::CORE_ERROR,
@@ -245,6 +276,32 @@ class CORE {
 	    );
         }
     }
+
+    static function run_send(String $_CONFIG, $event) {
+	try {
+	    $EventDispatcher	= $_CONFIG::EventDispatcher;
+	    $Event		= $_CONFIG::Event;
+	    $event->value{0}->send();
+	} catch(Throwable $e) {
+	    $EventDispatcher::getInstance()->dispatch(
+    			$Event::CORE_ERROR,
+			'ERROR CORE...',
+			\Allice\Module\Cloud::newObject(TRUE)->addArray([
+			    'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
+			    'value' => [
+				    "POINT:[".
+				    "Message :{" . $e->getMessage()."}".
+				    "Code :{" . $e->getCode()."}".
+				    "File :{" . $e->getFile()."}".
+				    "Line :{" . $e->getLine()."}".
+				    "Dump :{" . $e->getTraceAsString()."}".
+				    "]"
+				    ]
+    			])
+	    );
+        }
+    }
+
     static function run_found_domain(String $_CONFIG, String $_dns_url, String $_request_url) {
 	// try catch
 	    $EventDispatcher	= $_CONFIG::EventDispatcher;
@@ -285,7 +342,7 @@ class CORE {
 													$_request_url
 													]
 											    ])
-		);;
+		);
     	} catch(Throwable $e) {
 	    $EventDispatcher::getInstance()->dispatch(
     		$Event::CORE_ERROR,

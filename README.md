@@ -9,5 +9,8 @@ Requires PHP 7.0.x or higher
 Требуется PHP 7.0.x или выше
 
 run:
-php server.php
 
+1) http://root.x.ru/api/v1/profile/image/get/id_vorlon-256?id=1234&t=23452
+
+2)  curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}'  http://root.x.ru/api/v1/profile/file/get/id_vorlon-256?id=1333
+3)  curl http://root.x.ru/api/v1/profile/file/get/id_vorlon-256?id=1333

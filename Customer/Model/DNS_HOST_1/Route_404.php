@@ -8,7 +8,12 @@ class Route_404 extends \Allice\Model\BASE {
         parent::__construct($_CONFIG);
     }
     // конструктор добавления event eventdist
-    function run ($req) { var_dump($req); echo '404 not found '.PHP_EOL; return []; }
+    function run ($req) { 
+    return [
+	'dns'	=> $req->DNS,
+	'url'	=> $req->req
+	]; 
+    }
 }
 
 ?>

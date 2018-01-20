@@ -17,9 +17,7 @@ class CORE extends \Allice\Route\BASE {
 		    			    ],
 			    'view' 	=> [
 					    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-					    'method'	=> 'run',
-					    'JSON'	=> FALSE,
-					    'TPL'	=> '{{ include("../tpl/admin/class.post.2.tpl") }}'
+					    'method'	=> 'run'
 					    ]
 			    ],
 	],
@@ -32,9 +30,7 @@ class CORE extends \Allice\Route\BASE {
 		    			    ],
 			    'view' 	=> [
 					    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-					    'method'	=> 'run',
-					    'JSON'	=> FALSE,
-					    'TPL'	=> '{{ include("../tpl/admin/class.post.3.tpl") }}'
+					    'method'	=> 'run'
 					    ]
 			    ],
 	],
@@ -53,10 +49,8 @@ class CORE extends \Allice\Route\BASE {
 		    			    'method'	=> 'run'
 		    			    ],
 			    'view' 	=> [
-					    'class'	=> \Customer\View\DNS_HOST_1\View_Rabbit::class,
-					    'method'	=> 'run',
-					    'JSON'	=> FALSE,
-					    'TPL'	=> '{{ include("../tpl/admin/class.post.2.tpl") }}'
+					    'class'	=> \Customer\View\DNS_HOST_1\V404::class,
+					    'method'	=> 'run'
 					    ]
 			    ],
 	    ],

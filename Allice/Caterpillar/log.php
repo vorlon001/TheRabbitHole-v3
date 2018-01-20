@@ -23,7 +23,20 @@ class log
         public static function __callStatic($name, $arguments) {}
 	public function __set($name, $value) {}
         public function __get($name) {}
-
+	public static function initInstance()
+	{
+	    if (null === self::$instance)
+	    {
+            //date_default_timezone_set('Asia/Yekaterinburg');
+            //defined('SITE_ROOT_PATH') OR header('Location: /500.html'); 
+		try {
+    		    self::$instance =  new self(SITE_ROOT_PATH.FILE_EVENT_LOG);
+    		    self::$instance ->open();
+		} catch(Throwable $e) {
+		    throw new \Allice\Exception\Knave_of_Hearts("Knave of Hearts say. Fail:".__NAMESPACE__."/".__METHOD__." L:".__LINE__." logfile:".$this->log_filename);
+		}
+	    }
+	}
 	public static function getInstance()
 	{
     	    if (null === self::$instance)

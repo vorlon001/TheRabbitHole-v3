@@ -1,0 +1,49 @@
+server {
+    listen 80;
+    listen [::]:80 ;
+    server_name  *.x.ru;
+    root /var/www;
+    index index.html index.htm index.php;
+
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header Access-Control-Allow-Origin *;
+    error_page   404 /Public/404.html;
+    error_page   403 /Public/404.html;
+    error_page   401 /Public/404.html;
+    error_page   400 /Public/404.html;
+    error_page 500 502 503 504 /500.html;
+
+    rewrite_log  on;
+
+
+    location ~ /\.git {
+        rewrite ^  http:/x.ru/Public/404.html;
+    }
+
+   location ~* ^.+\.(html|woff2|ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf|css|js)$ {
+	expires -1; #24h00m;
+	gzip_static  always;
+    }
+
+  
+
+    # блокируем папки с ядром php .git
+
+    rewrite ^/favicon.ico(.*)$	/Public/favicon.ico last;
+    rewrite ^/Public(.*)$	/Public/$1 last;
+    rewrite ^/40[0-9].html$		/Public/404.html last;
+    rewrite ^/50[0-9].html$		/Public/500.html last;
+    rewrite ^/server.php(.*)$	http://iblog.pro/ permanent;
+    rewrite ^/Allice(.*)$ 	/ permanent;
+    rewrite ^/Customer(.*)$ 	/ permanent;
+    rewrite ^/Log(.*)$		/ permanent;
+    rewrite ^/System(.*)$ 	/ permanent;
+    rewrite ^/.git(.*)$  	/ permanent;
+
+
+
+    rewrite ^/(.*)$ 		/server.php?dns=$host&url=/$1 last;
+
+    include phpfpm.conf;
+
+}

@@ -9,9 +9,26 @@ class View_Rabbit extends \Allice\View\BASE {
     }
     // конструктор добавления event eventdist
     function run ($req) { 
-	try {
-	    var_dump("START RUN MODEL ########################################",json_encode($req)); 
-	    echo 'RENDER PAGE'.PHP_EOL; 
+	try {  
+
+	    $s = 'CONTENT TEST:'.var_export("<br>START RUN VIEW... <br>args:".json_encode($req),true); 
+    	    $s .= '<br>RENDER PAGE'.PHP_EOL; 
+	    $s .= '<br>END RUN MODEL...';
+
+    	    $View = new \Blitz();
+    	    $View->load('{{ include("Customer/TPL/DNS_HOST_1/View_Rabbit/run.tpl") }}');
+    	    $s = $View->parse(
+				array(	
+					'DATA' => array( 
+							    'DNS' => $req['dns'] , 
+							    'URL' => $req['url'] 
+							),
+					'CONTENT' => array( 
+							    'HTML' => $s
+							    )
+					)
+				);
+
 	     if(debug_mode==TRUE) $this->EventDispatcher::getInstance()->dispatch(
 										    $this->Event::LOG,
 										    'CUSTOM_LOG exec  VIEW RENDER...',
@@ -19,10 +36,15 @@ class View_Rabbit extends \Allice\View\BASE {
 						    					'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
 						    					'value' => [
     												    $req,
+												    $s
 						    						    ]
 										    ])
 										);
-	    var_dump("END RUN MODEL ########################################");
+	    $f = new $this->Frog_Footman();	
+	    $f->_header('Content-Type:text/plain');
+	    $f->_cookie("UUID"		, "32423423423423", time() + 10,"","");
+	    $f->_data($s);
+	    return $f;
 	} catch(Throwable $e) {
     	    $this->EventDispatcher::getInstance()->dispatch(
 		$this->Event::LOG,

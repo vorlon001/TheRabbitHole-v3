@@ -21,25 +21,29 @@ class Dispatcher {
     private $CORE		= NULL;
     private $TheRabbitHole	= NULL;
     private $ROUTE_DNS		= NULL;
-
+    private $Logger		= NULL;
+    private $Pudding		= NULL;
 
     private $view   = [];
     private $model  = [];
     private $routes = [];
     private $route  = [];
-    private    function __construct(String $_CONFIG) {
+    private    function __construct(String $_CONFIG, String $_domain_request) {
 	$this->_CONFIG 		= $_CONFIG;
 	$this->EventDispatcher 	= $_CONFIG::EventDispatcher;
 	$this->Event		= $_CONFIG::Event;
 	$this->CORE  		= $_CONFIG::CORE;
 	$this->TheRabbitHole 	= $_CONFIG::TheRabbitHole;
 	$this->ROUTE_DNS 	= $_CONFIG::ROUTE_DNS;
+	$this->Logger		= ($_CONFIG::Logger)::getInstance();
+	$this->Pudding		= ($_CONFIG::Pudding)::getInstance($_CONFIG);
+	$this->_domain_request	= $_domain_request;
     }
-    public static function initInstance(String $_CONFIG) {
+    public static function initInstance(String $_CONFIG, String $_domain_request) {
 	if (null === self::$instance)
 	{
     	    $_class = __CLASS__;
-    	    self::$instance = new $_class($_CONFIG);
+    	    self::$instance = new $_class($_CONFIG, $_domain_request);
 	    return self::$instance;
 	}
 	return self::$instance;
@@ -81,8 +85,7 @@ class Dispatcher {
 		    $t = json_encode($e->getTrace());
 		    $sms = 'Cheshire Cat Say:'.$m.' C:'.$c.' F:'.$f.' L:'.$l.' T:'.$t;
 		    print('[{Code:' . $code . '} {Event:' . $eventName . '} {Initiator:' . $event->id .'} {Value:"' . $sms .'"}]'.PHP_EOL);
-		    global $class_log;
-		    $class_log->write_message(
+		    $this->Logger->write_message(
 						$this->_domain_request,
 						$code,
 						$eventName,
@@ -110,10 +113,8 @@ class Dispatcher {
 
         	break;
 	    case $this->Event::LOG: 
-		print('[{Code:' . $code . '} {Event:' . $eventName . '} {Initiator:' . $event->id .'} {Value:' . json_encode($event->value).'}]'.PHP_EOL);
 		try {
-		    global $class_log;
-		    $class_log->write_message(
+		    $this->Logger::getInstance()->write_message(
 						$this->_domain_request,
 						$code,
 						$eventName,
@@ -142,10 +143,8 @@ class Dispatcher {
         	break;
 	    case $this->Event::SYSTEM_CORE_LOG:
     	    case $this->Event::SYSTEM_LOG:
-		print('[{Code:' . $code . '} {Event:' . $eventName . '} {Initiator:' . $event->id .'} {Value:' . json_encode($event->value).'}]'.PHP_EOL);
 		try {
-	    	    global $class_log; 
-		    $class_log->write_message(
+		    $this->Logger->write_message(
 		    			    ((isset($this->_domain_request))?$this->_domain_request:'NOT YET SET'),
 					    $code,
 		    			    $eventName,
@@ -187,7 +186,7 @@ class Dispatcher {
 		
 		$this->CORE::run_found_domain($this->_CONFIG,$event->value{0},$event->value{1});
 		break;
-	    case $this->Event::ROUTE_FOUND: 
+	    case $this->Event::ROUTE_FOUND:  
 		if(debug_trace==TRUE) $this->dispatch(
 										$this->Event::SYSTEM_LOG,
 										'exec ROUTE FOUND...',
@@ -201,7 +200,7 @@ class Dispatcher {
 										);
 		$this->CORE::run_found_route($this->_CONFIG,$event->value{0},(isset($event->value{1}))?$event->value{1}:NULL);
             break;
-	    case $this->Event::MODEL_RUN:
+	    case $this->Event::MODEL_RUN:	
 		if(debug_trace==TRUE) $this->dispatch(
 										$this->Event::SYSTEM_LOG,
 										'exec MODEL RUN...',
@@ -228,6 +227,38 @@ class Dispatcher {
 														)
 										);
 		$this->CORE::run_render_view($this->_CONFIG,$event);
+		break;
+	    case $this->Event::VIEW_SEND:
+		try {
+		    if(debug_trace==TRUE) $this->dispatch(
+							$this->Event::SYSTEM_LOG,
+							'exec VIEW SEND...',
+							\Allice\Module\Cloud::newObject(TRUE)->addArray([
+									'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
+									'value' => [
+    											var_export($event,true),
+										    ]
+									])
+						    );
+		    $this->CORE::run_send($this->_CONFIG,$event);
+		} catch(Throwable $e) {
+    		    $this->dispatch(
+	    			    $this->Event::CORE_ERROR,
+				    'ERROR CORE...',
+    	    			    \Allice\Module\Cloud::newObject(TRUE)->addArray([
+						    'id' => __METHOD__.' L:'.__LINE__.' MU:'.memory_get_usage().' MP:'.memory_get_peak_usage(),
+						    'value' => [
+								"POINT:[".
+								    "Message :{" . $e->getMessage()."}".
+								    "Code :{" . $e->getCode()."}".
+								    "File :{" . $e->getFile()."}".
+								    "Line :{" . $e->getLine()."}".
+								    "Dump :{" . $e->getTraceAsString()."}".
+								"]"
+								]
+	    			    ])
+		    );
+		}
 		break;
     	    default:
 		if(debug_trace==TRUE) $this->dispatch(
