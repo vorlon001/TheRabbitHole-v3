@@ -1,6 +1,5 @@
 <?php
 
-$time_starti = microtime(true);
 try {
     require_once ('System/loader.php');
     require_once ('System/global.php');
