@@ -24,7 +24,7 @@ class PHP_MODULE {
 	    self::$instance =  new self();
         } catch(Throwable $e) {
 	throw new \Exception("PHP_MODULE Fail:".__NAMESPACE__."/".__METHOD__." L:".__LINE__." logfile:".$this->log_filename);
-	header('Location: /500.html');
+	header('Location: /Public/500.html');
 	die();
         }
     }
@@ -34,7 +34,7 @@ class PHP_MODULE {
 	foreach($this->module as $key => $value)  {
     	    if (!extension_loaded($value)) {
 		throw new \Exception($value." PHP EXT. NOT FOUND");
-		header('Location: /500.html');
+		header('Location: /Public/500.html');
 		die();
     	    } 
 	}
