@@ -11,8 +11,7 @@ Requires:
 dns for demo x.ru
 
 Пример MVC роутера  на PHP 7.0.x
-Требуется PHP 7.0.x или выше
-домен использованный в примере x.ru
+
 
 1) NGINX config in nginx_config/config
 2) http://root.x.ru/api/v1/profile/image/get/id_vorlon-256?id=1234&t=23452
