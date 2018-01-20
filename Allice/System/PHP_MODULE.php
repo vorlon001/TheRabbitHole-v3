@@ -5,13 +5,8 @@ namespace Allice\System;
 class PHP_MODULE {
 
     public $module = [
-//	    'xdebug',
-	    'redis',
-	    'tarantool',
-	    'pdo_mysql',
 	    'json',
 	    'geoip',
-	    'argon2',
 	    'BLITZ'
 	    ];
 
