@@ -33,7 +33,7 @@ server {
     rewrite ^/Public(.*)$	/Public/$1 last;
     rewrite ^/40[0-9].html$		/Public/404.html last;
     rewrite ^/50[0-9].html$		/Public/500.html last;
-    rewrite ^/server.php(.*)$	http://iblog.pro/ permanent;
+    rewrite ^/server.php(.*)$	http://x.ru/ permanent;
     rewrite ^/Allice(.*)$ 	/ permanent;
     rewrite ^/Customer(.*)$ 	/ permanent;
     rewrite ^/Log(.*)$		/ permanent;
