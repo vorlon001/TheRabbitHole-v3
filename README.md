@@ -8,6 +8,7 @@ Requires:
 - PHP 7.0.x or higher, 
 - PHP extension: json, geoip, BLITZ (https://github.com/alexeyrybak/blitz)
 - Nginx 1.13.x
+
 dns for demo x.ru
 
 Пример MVC роутера  на PHP 7.0.x
