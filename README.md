@@ -1,4 +1,4 @@
-TheRabbitHole v3 (build 43)
+TheRabbitHole v3 (v 1.0.0)
 
 ![alt text](http://www.wonderland-alice.ru/netcat_files/177_94.gif)
 
